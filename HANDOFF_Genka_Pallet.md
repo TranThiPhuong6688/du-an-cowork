@@ -6,6 +6,7 @@
 - Luôn mở bản MỚI NHẤT của file trước khi sửa (đã từng mất phần user sửa). Chỉ sửa sheet cần thiết.
 - GIỮ NGUYÊN tên file (link giữa các file): "Charge 成形・組立-V02.xlsx", "Tap hop chi phi ke toan-V03.xlsx".
 - Macro VBA: chỉ dùng ký tự ASCII (không dấu) trong code. Import .bas từ đường dẫn có chữ Nhật/Việt bị lỗi → dùng file công cụ .xlsm hoặc copy code dán tay.
+- Sửa Excel bằng openpyxl làm HỎNG external link: externalLink có 2 đường dẫn (tuyệt đối + tương đối) → Excel "repair" thành [RecoveredExternalLinkN]. Sau khi lưu, BẮT BUỘC chép lại nguyên xl/externalLinks/* (xml + _rels) từ file gốc; kiểm tra mọi r:id đều có trong rels.
 
 ## Đường dẫn
 - Gốc: D:\D\管理データ\6.原価活動\1. 原価計算ファイル\
