@@ -1,0 +1,157 @@
+================================================================================
+HƯỚNG DẪN V2 - BẤMTON "THÊM XE" (ĐƠN GIẢN, CHẮC CHẮN CHẠY)
+================================================================================
+
+⚡ CÓ GÌ MỚI:
+- Không dùng Event (Worksheet_Change) → không bị lỗi
+- Chỉ cần bấm button "Thêm Xe" → nhập mã xe → macro chạy
+- Code đơn giản, không có auto-trigger
+
+📋 BƯỚC 1: IMPORT CODE VÀO EXCEL
+================================================================================
+
+1.1. Mở file: Quan_Ly_Quet_Xe.xlsx (trên Windows + Excel)
+
+1.2. Bấm Alt+F11 → mở VBA Editor
+
+1.3. Insert → Module
+
+1.4. Mở file: VBA_Code_QuetXe_V2_DonGian.bas (bằng Notepad)
+     - Chọn tất cả (Ctrl+A) → Copy (Ctrl+C)
+
+1.5. Quay lại VBA Editor
+     - Paste vào Module (Ctrl+V)
+     - Đóng VBA Editor (Alt+F4)
+
+✅ Code đã nhập
+
+
+📌 BƯỚC 2: TẠO BUTTON "THÊM XE"
+================================================================================
+
+2.1. Quay lại Excel (Sheet QuetXe)
+
+2.2. Vào: Insert → Button (hoặc Shape)
+     (Nếu không thấy "Button", dùng Developer → Insert → Button)
+
+2.3. Vẽ button trên sheet (drag mouse)
+
+2.4. Hộp thoại "Assign Macro" sẽ hiện lên
+     - Chọn: "ThemXe"
+     - Bấm OK
+
+2.5. Nếu không hiện hộp thoại:
+     - Click phải button → Assign Macro
+     - Chọn "ThemXe"
+     - Click OK
+
+2.6. Đổi tên button:
+     - Chỉnh sửa text trên button thành: "Thêm Xe"
+     - Hoặc: "Quét"
+
+
+🎯 CÁCH SỬ DỤNG:
+================================================================================
+
+1. Bấm button "Thêm Xe"
+
+2. Nhập mã xe (VD: A001)
+
+3. Bấm OK
+
+4. Macro sẽ tự động:
+   ✓ Ghi mã xe ở cột A
+   ✓ Ghi thời gian quét ở cột B (dd/mm/yyyy hh:mm:ss)
+   ✓ Tính thời gian quay vòng ở cột C, D (nếu xe đã quét trước)
+   ✓ Tô vàng nếu quay vòng >= 16 giờ
+
+
+📊 MACRO KHÁC TRONG CODE:
+================================================================================
+
+1. CapNhatTongHop_Ngay
+   - Bấm Alt+F8
+   - Chọn "CapNhatTongHop_Ngay"
+   - Bấm Run
+   → Tổng hợp xe bẩn vào Sheet TongHop
+
+2. XoaDongHienTai
+   - Click ô nào đó trong dòng cần xóa
+   - Bấm Alt+F8
+   - Chọn "XoaDongHienTai"
+   - Bấm Run
+   → Xóa dòng đó
+
+
+💾 LƯUFILE:
+================================================================================
+
+File → Save As
+- Tên: Quan_Ly_Quet_Xe
+- Định dạng: Excel Macro-Enabled Workbook (*.xlsm)
+- Bấm Save
+
+✅ XONG!
+
+
+⚠️ NẾU GẶPLỖI:
+================================================================================
+
+❌ "This file cannot be opened in the selected format"
+   → File chưa được save dưới dạng .xlsm
+   → Save lại: File → Save As → chọn định dạng .xlsm
+
+❌ "Compile Error" trong VBA
+   → Code paste bị lỗi
+   → Xóa Module, Insert Module mới, paste lại từ file .bas
+
+❌ Button không chạy
+   → Kiểm tra: Click phải button → Assign Macro → chọn "ThemXe"
+   → Hoặc tạo button mới: Insert → Button → chọn "ThemXe"
+
+❌ Excel hỏi "Enable Macros?"
+   → Bấm "Enable"
+
+
+📞 CHI TIẾT CÁC CỘT:
+================================================================================
+
+CỘT A - MÃ XE:
+   → Nhập tay (hoặc scan QR nếu có)
+   → VD: A001, B002, v.v.
+
+CỘT B - THỜI GIAN QUÉT:
+   → Tự động ghi (do macro)
+   → Định dạng: dd/mm/yyyy hh:mm:ss
+
+CỘT C - THỜI GIAN QUAY VÒNG:
+   → Tự động tính (so với lần quét trước của xe này)
+   → Dạng: 34H 00M (34 giờ 0 phút)
+   → Tô vàng nếu >= 16 giờ
+
+CỘT D - GIỜ:
+   → Số giờ dạo số
+   → VD: 34.0 H
+   → Tô vàng nếu >= 16 giờ
+
+CỘT E - GHI CHÚ:
+   → Nhập: ban, banh, ko sach, khong sach
+   → Hoặc bất kỳ ghi chú nào
+
+CỘT F - XÓA:
+   → Để trống (dùng macro XoaDongHienTai)
+
+
+✅ TÓNG TẮT:
+================================================================================
+
+1. ✓ Import code VBA
+2. ✓ Tạo button "Thêm Xe" → gán macro "ThemXe"
+3. ✓ Bấm button → nhập mã xe → macro chạy
+4. ✓ Save file .xlsm
+5. ✓ Dùng!
+
+================================================================================
+Version: 2.0 (Đơn Giản, Button)
+Ngày: 29/09/2026
+================================================================================
