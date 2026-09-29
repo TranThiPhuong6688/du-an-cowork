@@ -1,6 +1,7 @@
 HUONG DAN CAI DAT (Excel tren Windows) - 5 buoc
 
-1. Mo Quan_Ly_Quet_Xe.xlsx > File > Save As > "Excel Macro-Enabled Workbook (*.xlsm)".
+1. Mo Excel, tao file moi, doi ten sheet 1 thanh QuetXe, go tieu de A1:F1 (Ma xe | Thoi gian quet | Thoi gian quay vong | So gio | Ghi chu | Xoa).
+   (Hoac dung san Quan_Ly_Quet_Xe.xlsx trong Git.) Roi File > Save As > "Excel Macro-Enabled Workbook (*.xlsm)".
 2. Bam Alt+F11 mo VBA Editor.
 3. Dan code vao DUNG CHO (sai cho se khong chay):
    a. 1_Sheet_QuetXe.txt     -> double-click sheet "QuetXe" (cay ben trai) -> dan vao.
