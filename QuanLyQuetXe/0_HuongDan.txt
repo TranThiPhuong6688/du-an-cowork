@@ -1,0 +1,24 @@
+HUONG DAN CAI DAT (Excel tren Windows) - 5 buoc
+
+1. Mo Quan_Ly_Quet_Xe.xlsx > File > Save As > "Excel Macro-Enabled Workbook (*.xlsm)".
+2. Bam Alt+F11 mo VBA Editor.
+3. Dan code vao DUNG CHO (sai cho se khong chay):
+   a. 1_Sheet_QuetXe.txt     -> double-click sheet "QuetXe" (cay ben trai) -> dan vao.
+   b. 2_ThisWorkbook.txt     -> double-click "ThisWorkbook" -> dan vao.
+   c. 3_modAutoSave.bas      -> File > Import File (hoac Insert > Module roi dan, bo dong Attribute).
+   d. 4_modTongHop.bas       -> File > Import File (hoac Insert > Module roi dan, bo dong Attribute).
+   Ten module phai la modAutoSave va modTongHop (code goi modTongHop.T).
+4. Luu (Ctrl+S), dong file, mo lai, bam "Enable Content"/"Enable Macros".
+5. Test: go ma xe o cot A -> cot B tu ghi gio; quet lai cung ma -> cot C, D co ket qua.
+
+Chay tong hop: Alt+F8 > CapNhatTongHop_Ngay > Run.
+
+Neu macro khong chay: File > Options > Trust Center > Trust Center Settings > Macro Settings > Disable with notification. Dat file trong thu muc tin cay neu can.
+
+GIA DINH CAN XAC NHAN (chua duoc chay thu tren Excel that):
+- TongHop: "Ngay bat dau" = ngay quet lan truoc cua xe do; "Ngay ban" = ngay dong ban; so ngay = chenh lech ngay lich.
+  Muon doi thanh "tu lan ban truoc" -> sua START_MODE = 2 dau file 4_modTongHop.bas.
+- Tu khoa ban: ban, bun, bẩn, bủn, khong sach, ko sach, không sạch, ko sạch, chưa sạch (khong phan biet hoa/thuong, khop nguyen tu).
+- Xoa dong: go X o cot F, roi chon o A va nhan Delete -> xoa A:F va border (khong dich dong).
+- Xoa ca dong bang chuot phai > Delete Row khong duoc bao ve.
+- Ma xe A co du lieu: bam vao thi tu nhay xuong o A trong dau tien (tru khi dong do co X o cot F).

@@ -1,0 +1,12 @@
+Option Explicit
+' DAN VAO: VBA Editor > double-click "ThisWorkbook"
+
+Private Sub Workbook_Open()
+    StartAutoSave
+End Sub
+
+Private Sub Workbook_BeforeClose(Cancel As Boolean)
+    StopAutoSave
+    On Error Resume Next
+    ThisWorkbook.Save
+End Sub

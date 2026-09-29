@@ -1,0 +1,172 @@
+Option Explicit
+' DAN VAO: VBA Editor > double-click sheet "QuetXe" (khong dan vao Module)
+
+Private Const FIRST_ROW As Long = 2
+Private Const YELLOW_HOURS As Double = 16
+Private mOld As Object
+
+Private Sub EnsureOld()
+    If mOld Is Nothing Then Set mOld = CreateObject("Scripting.Dictionary")
+End Sub
+
+Private Function HasX(ByVal r As Long) As Boolean
+    HasX = (UCase$(Trim$(Me.Cells(r, 6).Value & "")) = "X")
+End Function
+
+Private Function HasScan(ByVal r As Long) As Boolean
+    HasScan = (Len(Trim$(Me.Cells(r, 2).Value & "")) > 0)
+End Function
+
+Private Function HasCode(ByVal r As Long) As Boolean
+    HasCode = (Len(Trim$(Me.Cells(r, 1).Value & "")) > 0)
+End Function
+
+Private Sub SetOld(ByVal r As Long)
+    EnsureOld
+    mOld(r) = Trim$(Me.Cells(r, 1).Value & "")
+End Sub
+
+Private Sub StoreOld(ByVal rng As Range)
+    Dim c As Range, n As Long
+    EnsureOld
+    For Each c In rng.Cells
+        n = n + 1
+        If n > 2000 Then Exit For
+        mOld(c.Row) = Trim$(c.Value & "")
+    Next c
+End Sub
+
+Private Function NextEmptyRow() As Long
+    Dim r As Long, last As Long
+    last = Me.Cells(Me.Rows.Count, 1).End(xlUp).Row
+    If last < FIRST_ROW Then NextEmptyRow = FIRST_ROW: Exit Function
+    For r = FIRST_ROW To last + 1
+        If Not HasCode(r) Then NextEmptyRow = r: Exit Function
+    Next r
+End Function
+
+Private Sub Worksheet_SelectionChange(ByVal Target As Range)
+    Dim rng As Range
+    On Error GoTo EH
+    Set rng = Intersect(Target, Me.Range("A" & FIRST_ROW & ":A" & Me.Rows.Count))
+    If rng Is Nothing Then Exit Sub
+    If Target.Cells.CountLarge = 1 Then
+        If HasCode(rng.Row) And Not HasX(rng.Row) Then
+            Application.EnableEvents = False
+            Me.Cells(NextEmptyRow(), 1).Select
+            Application.EnableEvents = True
+            Exit Sub
+        End If
+    End If
+    StoreOld rng
+    Exit Sub
+EH:
+    Application.EnableEvents = True
+End Sub
+
+Private Sub Worksheet_Change(ByVal Target As Range)
+    Dim rng As Range, c As Range, r As Long
+    Dim code As String, known As Boolean, old As String
+    Dim needUndo As Boolean, warned As Boolean
+
+    Set rng = Intersect(Target, Me.Range("A" & FIRST_ROW & ":A" & Me.Rows.Count))
+    If rng Is Nothing Then Exit Sub
+    On Error GoTo EH
+    Application.EnableEvents = False
+    EnsureOld
+
+    For Each c In rng.Cells
+        r = c.Row
+        code = Trim$(c.Value & "")
+        known = mOld.Exists(r)
+        old = ""
+        If known Then old = mOld(r)
+
+        If Len(code) = 0 Then
+            If HasScan(r) Then
+                If HasX(r) Then
+                    ClearRow r
+                ElseIf known And Len(old) > 0 Then
+                    c.Value = old: warned = True
+                ElseIf Not known Then
+                    needUndo = True: warned = True
+                End If
+            End If
+        Else
+            If HasScan(r) And Not HasX(r) Then
+                If known Then
+                    If old <> code Then c.Value = old: warned = True
+                Else
+                    needUndo = True: warned = True
+                End If
+            Else
+                ScanRow r
+            End If
+        End If
+    Next c
+
+    If needUndo Then Application.Undo
+    For Each c In rng.Cells
+        SetOld c.Row
+    Next c
+    Application.EnableEvents = True
+    If warned Then MsgBox modTongHop.T("Kh{F4}ng th{1EC3} x{F3}a/s{1EED}a m{E3} xe khi ch{1B0}a nh{1EAD}p X {1EDF} c{1ED9}t F c{F9}ng d{F2}ng."), vbExclamation
+    Exit Sub
+EH:
+    Application.EnableEvents = True
+    MsgBox "Loi macro: " & Err.Description, vbCritical
+End Sub
+
+Private Sub ClearRow(ByVal r As Long)
+    Me.Range(Me.Cells(r, 1), Me.Cells(r, 6)).Clear
+End Sub
+
+Private Function PrevScanTime(ByVal skipRow As Long, ByVal code As String, ByVal t As Date) As Double
+    Dim last As Long, v As Variant, i As Long, x As Double, best As Double
+    last = Me.Cells(Me.Rows.Count, 1).End(xlUp).Row
+    If last < FIRST_ROW Then Exit Function
+    v = Me.Range(Me.Cells(FIRST_ROW, 1), Me.Cells(last, 2)).Value
+    For i = 1 To UBound(v, 1)
+        If FIRST_ROW + i - 1 <> skipRow Then
+            If StrComp(Trim$(v(i, 1) & ""), code, vbTextCompare) = 0 Then
+                x = 0
+                If IsDate(v(i, 2)) Then
+                    x = CDbl(CDate(v(i, 2)))
+                ElseIf IsNumeric(v(i, 2)) Then
+                    x = CDbl(v(i, 2))
+                End If
+                If x > best And x < CDbl(t) Then best = x
+            End If
+        End If
+    Next i
+    PrevScanTime = best
+End Function
+
+Private Sub ScanRow(ByVal r As Long)
+    Dim code As String, t As Date, prev As Double, mins As Long
+    code = Trim$(Me.Cells(r, 1).Value & "")
+    t = Now
+    prev = PrevScanTime(r, code, t)
+
+    Me.Cells(r, 2).NumberFormat = "dd/mm/yyyy hh:mm:ss"
+    Me.Cells(r, 2).Value = t
+    Me.Cells(r, 3).NumberFormat = "@"
+    Me.Cells(r, 4).NumberFormat = "0.0"" H"""
+
+    If prev > 0 Then
+        mins = CLng((CDbl(t) - prev) * 1440)
+        Me.Cells(r, 3).Value = (mins \ 60) & "H " & Format$(mins Mod 60, "00") & "M"
+        Me.Cells(r, 4).Value = mins / 60
+        If mins >= YELLOW_HOURS * 60 Then
+            Me.Range(Me.Cells(r, 3), Me.Cells(r, 4)).Interior.Color = RGB(255, 255, 0)
+        Else
+            Me.Range(Me.Cells(r, 3), Me.Cells(r, 4)).Interior.Pattern = xlNone
+        End If
+    Else
+        Me.Range(Me.Cells(r, 3), Me.Cells(r, 4)).ClearContents
+        Me.Range(Me.Cells(r, 3), Me.Cells(r, 4)).Interior.Pattern = xlNone
+    End If
+
+    Me.Range(Me.Cells(r, 1), Me.Cells(r, 6)).Borders.LineStyle = xlContinuous
+    Me.Cells(r, 6).ClearContents
+End Sub
